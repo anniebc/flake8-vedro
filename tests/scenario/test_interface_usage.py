@@ -131,3 +131,17 @@ def test_interface_method_in_but():
             API()
     """
     assert_error(StepsVisitor, code, ImportedInterfaceInWrongStep, func_name='API')
+
+
+def test_call_self_method():
+    code = """
+    from interfaces.api import API
+    from contexts import added
+
+    class Scenario(vedro.Scenario):
+        subject = 'string'
+        def given(): self.photo = self.photo_method()
+        def when(): pass
+        def then(): assert foo == var
+    """
+    assert_not_error(StepsVisitor, code)
