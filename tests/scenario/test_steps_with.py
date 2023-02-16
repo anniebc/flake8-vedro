@@ -69,3 +69,14 @@ def test_scenario_with_child():
         def then(): assert foo == var
     """
     assert_error(StepsVisitor, code, MockHistoryIsNotSaved, mock_name='mocked_2')
+
+
+def test_scenario_with_self():
+    code = """
+    class Scenario(vedro.Scenario):
+        def when():
+            with self.mocked_1:
+                pass
+        def then(): assert foo == var
+    """
+    assert_error(StepsVisitor, code, MockHistoryIsNotSaved, mock_name='mocked_1')

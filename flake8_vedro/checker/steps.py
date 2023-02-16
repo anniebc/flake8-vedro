@@ -1,5 +1,5 @@
 import ast
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from flake8_vedro.errors.scenario import (
     ImportedInterfaceInWrongStep,
@@ -50,8 +50,13 @@ class CommonStepChecker:
                 # with mocked_1, mocked_2:
                 for item in line.items:
                     if item.optional_vars is None:
-                        context.report_error(MockHistoryIsNotSaved, line,
-                                             mock_name=item.context_expr.id)
+                        if isinstance(item.context_expr, ast.Name):
+                            context.report_error(MockHistoryIsNotSaved, line,
+                                                 mock_name=item.context_expr.id)
+                        # with self.mock_1:
+                        elif isinstance(item.context_expr, ast.Attribute):
+                            context.report_error(MockHistoryIsNotSaved, line,
+                                                 mock_name=item.context_expr.attr)
                 # with mocked_1:
                 #   with mocked 2:
                 cls.check_saving_mock_history(line.body, context)
@@ -60,7 +65,7 @@ class CommonStepChecker:
     def check_step_order(step: ast.FunctionDef or ast.AsyncFunctionDef,
                          context: StepCheckContext) -> None:
 
-        def get_step_order_by_name(name: str) -> int:
+        def get_step_order_by_name(name: str) -> Optional[int]:
             if name == '__init__' or name is None:
                 return 0
             elif name.startswith('given'):
@@ -72,11 +77,13 @@ class CommonStepChecker:
             elif name.startswith('and') or name.startswith('but'):
                 return 4
 
-        if get_step_order_by_name(step.name) < get_step_order_by_name(context.previous_step_name):
-            context.report_error(StepsWrongOrder,
-                                 step,
-                                 previous_step=context.previous_step_name,
-                                 current_step=step.name)
+        previous_order = get_step_order_by_name(context.previous_step_name)
+        if previous_order is not None:
+            if get_step_order_by_name(step.name) < previous_order:
+                context.report_error(StepsWrongOrder,
+                                     step,
+                                     previous_step=context.previous_step_name,
+                                     current_step=step.name)
 
     @staticmethod
     def check_no_assert_in_step(step: ast.FunctionDef or ast.AsyncFunctionDef,

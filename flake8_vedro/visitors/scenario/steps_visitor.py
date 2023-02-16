@@ -10,9 +10,10 @@ from flake8_vedro.confiig import Config
 
 class StepsVisitor(Visitor):
 
-    def __init__(self, config: Optional[Config] = None, **kwargs) -> None:
+    def __init__(self, config: Optional[Config] = None, filename: str = None, **kwargs) -> None:
         super(StepsVisitor, self).__init__(config=config)
         self.imports_node = []
+        self.filename = filename
 
     def error_from_node(self, error: Type[Error],
                         node: ast.AST,
@@ -40,13 +41,17 @@ class StepsVisitor(Visitor):
                 )
             ]
 
-            final_context: StepCheckContext = reduce(
-                lambda context, step: StepChecker.check_step(step, context),
-                steps,
-                StepCheckContext(
-                    report_error=self.error_from_node,
-                    imports_node=self.imports_node,
+            try:
+                final_context: StepCheckContext = reduce(
+                    lambda context, step: StepChecker.check_step(step, context),
+                    steps,
+                    StepCheckContext(
+                        report_error=self.error_from_node,
+                        imports_node=self.imports_node,
+                    )
                 )
-            )
+                StepChecker.check_context(node, final_context)
+            except Exception as e:
+                print(e)
+                print(self.filename)
 
-            StepChecker.check_context(node, final_context)

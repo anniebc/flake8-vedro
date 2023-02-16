@@ -145,3 +145,41 @@ def test_call_self_method():
         def then(): assert foo == var
     """
     assert_not_error(StepsVisitor, code)
+
+
+def test_call_async_method():
+    code = """
+    from interfaces import get
+
+    class Scenario(vedro.Scenario):
+        subject = 'string'
+        def given(): await get()
+        def when(): pass
+        def then(): assert foo == var
+    """
+    assert_error(StepsVisitor, code, ImportedInterfaceInWrongStep, func_name='get')
+
+
+def test_call_async_class_method():
+    code = """
+    from interfaces.api import API
+
+    class Scenario(vedro.Scenario):
+        subject = 'string'
+        def given(): await API.get()
+        def when(): pass
+        def then(): assert foo == var
+    """
+    assert_error(StepsVisitor, code, ImportedInterfaceInWrongStep, func_name='API')
+
+
+def test_schema():
+    code = """
+
+    class Scenario(vedro.Scenario):
+        subject = 'string'
+        def given(): await API.get()
+        def when(): pass
+        def then(): assert foo == schema.array.len(1)
+    """
+    assert_not_error(StepsVisitor, code)

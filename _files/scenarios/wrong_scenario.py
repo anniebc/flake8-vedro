@@ -1,14 +1,17 @@
+from interfaces import API
+
+
 class Scenario(vedro.Scenario):
-    subject = 'asdasd'
+    subject = 'string'
 
-    @params(1, 2)
-    def __init__(self):
-        pass
+    def given(self):
+        API.get()
+        expected_provider_blocks = schema.array.contains_all([
+            StatisticProviderWithAlbumsSchema,
+            StatisticProviderWithAlbumsSchema
+        ]).length(2)
+        API().get()
+        await API.get()
 
-    def then(self):
-        pass
-
-    def when(self):
-        with mocked_3:
-            pass
-
+    def when(self): pass
+    def then(self): assert foo == var
