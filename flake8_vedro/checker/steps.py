@@ -50,8 +50,13 @@ class CommonStepChecker:
                 # with mocked_1, mocked_2:
                 for item in line.items:
                     if item.optional_vars is None:
-                        context.report_error(MockHistoryIsNotSaved, line,
-                                             mock_name=item.context_expr.id)
+                        if isinstance(item.context_expr, ast.Name):
+                            context.report_error(MockHistoryIsNotSaved, line,
+                                                 mock_name=item.context_expr.id)
+                        # with self.mock_1:
+                        elif isinstance(item.context_expr, ast.Attribute):
+                            context.report_error(MockHistoryIsNotSaved, line,
+                                                 mock_name=item.context_expr.attr)
                 # with mocked_1:
                 #   with mocked 2:
                 cls.check_saving_mock_history(line.body, context)
