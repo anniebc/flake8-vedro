@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 *.py~
 .idea
+_files/
