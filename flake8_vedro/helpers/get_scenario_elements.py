@@ -2,6 +2,25 @@ import ast
 from typing import List, Optional
 
 
+def get_all_steps(class_node: ast.ClassDef) -> List:
+    return [
+        element for element in class_node.body if (
+                isinstance(element, ast.FunctionDef) or isinstance(element, ast.AsyncFunctionDef))
+    ]
+
+
+def get_when_steps(steps: List) -> List:
+    return [
+        step for step in steps if step.name.startswith('when')
+    ]
+
+
+def get_then_steps(steps: List) -> List:
+    return [
+        step for step in steps if step.name.startswith('then')
+    ]
+
+
 def get_init_step(node: ast.ClassDef) -> Optional[ast.FunctionDef or ast.AsyncFunctionDef]:
     for element in node.body:
         if (isinstance(element, ast.FunctionDef) or isinstance(element, ast.AsyncFunctionDef)) \
@@ -9,10 +28,17 @@ def get_init_step(node: ast.ClassDef) -> Optional[ast.FunctionDef or ast.AsyncFu
             return element
 
 
-def get_subject(node: ast.ClassDef) -> Optional[ast.Assign]:
+def get_subjects(node: ast.ClassDef) -> List[ast.Assign]:
+    subjects = []
     for element in node.body:
         if isinstance(element, ast.Assign) and element.targets[0].id == 'subject':
-            return element
+            subjects.append(element)
+    return subjects
+
+
+def get_subject(node: ast.ClassDef) -> Optional[ast.Assign]:
+    subjects = get_subjects(node)
+    return subjects[0] if subjects else None
 
 
 def get_params_decorators(init_node: ast.FunctionDef or ast.AsyncFunctionDef) -> List[ast.Call]:
@@ -32,16 +58,3 @@ def get_params_decorators(init_node: ast.FunctionDef or ast.AsyncFunctionDef) ->
             elif isinstance(decorator.func, ast.Name) and decorator.func.id == 'params':
                 params_decorator.append(decorator)
     return params_decorator
-
-
-def get_imported_from_interfaces_functions(imports_node: List[ast.ImportFrom]) -> List[ast.alias]:
-    """
-    Return list of function names which was imported from interfaces
-    """
-    function_names: List[ast.alias] = []
-    for import_node in imports_node:
-        import_node: ast.ImportFrom
-        if import_node.module == 'interfaces' or 'interfaces.' in import_node.module:
-            for name in import_node.names:
-                function_names.append(name)
-    return function_names

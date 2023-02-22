@@ -5,12 +5,19 @@ from flake8_vedro.errors.scenario import (
     SubjectEmpty,
     SubjectNotFound
 )
-from flake8_vedro.visitors.scenario.scenario_visitor import ScenarioVisitor
+from flake8_vedro.visitors import ScenarioVisitor
+from flake8_vedro.visitors.scenario_checkers import (
+    SingleSubjectChecker,
+    SubjectEmptyChecker
+)
 
 
 def test_vedro_scenario_correct_subject():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_scenario_checker(SubjectEmptyChecker)
+    ScenarioVisitor.register_scenario_checker(SingleSubjectChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         subject = 'any string'
         def when(): pass
         def then(): assert True
@@ -19,30 +26,33 @@ def test_vedro_scenario_correct_subject():
 
 
 def test_vedro_scenario_empty_subject():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_scenario_checker(SubjectEmptyChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         subject = ''
         def when(): pass
-        def then(): assert True
     """
     assert_error(ScenarioVisitor, code, SubjectEmpty)
 
 
 def test_vedro_scenario_no_subject():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_scenario_checker(SingleSubjectChecker)
     code = """
-        class Scenario(vedro.Scenario):
+        class Scenario:
             def when(): pass
-            def then(): assert True
     """
     assert_error(ScenarioVisitor, code, SubjectNotFound)
 
 
 def test_vedro_scenario_subject_duplicate():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_scenario_checker(SingleSubjectChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         subject = 'string'
         subject = 'another string'
         def when(): pass
-        def then(): assert True
     """
     assert_error(ScenarioVisitor, code, SubjectDuplicated)
