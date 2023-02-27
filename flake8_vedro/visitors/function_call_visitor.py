@@ -2,7 +2,7 @@ import ast
 from abc import ABC, abstractmethod
 from typing import List, Type
 
-from flake8_plugin_utils import Visitor
+from flake8_vedro.visitors._visitor_with_filename import VisitorWithFilename
 
 
 class Checker(ABC):
@@ -10,7 +10,7 @@ class Checker(ABC):
     def check(self, call_node): pass
 
 
-class FunctionCallVisitor(Visitor):
+class FunctionCallVisitor(VisitorWithFilename):
     checkers: List[Checker] = []
 
     @classmethod

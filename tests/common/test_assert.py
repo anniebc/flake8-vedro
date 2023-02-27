@@ -1,6 +1,6 @@
 from flake8_plugin_utils import assert_error, assert_not_error
 
-from flake8_vedro.errors.common import (
+from flake8_vedro.errors import (
     AssertSameObjectsForEquality,
     AssertWithConstant
 )

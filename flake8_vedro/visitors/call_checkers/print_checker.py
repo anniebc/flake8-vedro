@@ -3,7 +3,7 @@ from typing import List
 
 from flake8_plugin_utils import Error
 
-from flake8_vedro.errors.common import Print
+from flake8_vedro.errors import Print
 from flake8_vedro.visitors.function_call_visitor import (
     Checker,
     FunctionCallVisitor

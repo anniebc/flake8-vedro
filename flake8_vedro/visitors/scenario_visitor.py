@@ -8,7 +8,7 @@ from flake8_vedro.abstract_checkers import (
     ScenarioHelper,
     StepsChecker
 )
-from flake8_vedro.confiig import Config
+from flake8_vedro.config import Config
 
 
 class Context:
@@ -61,9 +61,11 @@ class ScenarioVisitor(Visitor):
                               scenario_node=node,
                               import_from_nodes=self.import_from_nodes,
                               filename=self.filename)
-
-            for checker in self.steps_checkers:
-                self.errors.extend(checker.check_steps(context))
-
-            for checker in self.scenarios_checkers:
-                self.errors.extend(checker.check_scenario(context, self.config))
+            try:
+                for checker in self.steps_checkers:
+                    self.errors.extend(checker.check_steps(context))
+                for checker in self.scenarios_checkers:
+                    self.errors.extend(checker.check_scenario(context, self.config))
+            except Exception as e:
+                print(f'Linter failed: checking {context.filename} with {checker}.\n'
+                      f'Exception: {e}')

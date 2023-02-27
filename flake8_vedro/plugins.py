@@ -12,29 +12,13 @@ from flake8_vedro.visitors import (
     ScenarioVisitor
 )
 
-from .confiig import Config
+from .config import Config
 from .defaults import Defaults
 
 
-class CommonStylePlugin(Plugin):
-    name = 'flake8_vedro_common_style'
-    version = '0.0.1'
-    visitors = [
-        FunctionCallVisitor,
-        AssertVisitor,
-        AnnotationVisitor
-    ]
-
-
-class VedroScenarioStylePlugin(Plugin):
-    name = 'flake8_vedro'
-    version = '0.1.0'
-    visitors = [
-        ScenarioVisitor
-    ]
-
-    def __init__(self, tree: ast.AST, filename: str,  *args, **kwargs):
-        super(VedroScenarioStylePlugin, self).__init__(tree)
+class PluginWithFilename(Plugin):
+    def __init__(self, tree: ast.AST, filename: str, *args, **kwargs):
+        super().__init__(tree)
         self.filename = filename
 
     def run(self):
@@ -49,6 +33,20 @@ class VedroScenarioStylePlugin(Plugin):
         if cls.config is None:
             return visitor_cls(filename=filename)
         return visitor_cls(config=cls.config, filename=filename)
+
+
+class VedroScenarioStylePlugin(PluginWithFilename):
+    name = 'flake8_vedro'
+    version = '0.1.0'
+    visitors = [
+        ScenarioVisitor,
+        AnnotationVisitor,
+        FunctionCallVisitor,
+        AssertVisitor,
+    ]
+
+    def __init__(self, tree: ast.AST, filename: str,  *args, **kwargs):
+        super().__init__(tree, filename)
 
     @classmethod
     def add_options(cls, option_manager: OptionManager):
@@ -66,5 +64,5 @@ class VedroScenarioStylePlugin(Plugin):
         cls, option_manager: OptionManager, options: argparse.Namespace, args: List[str]
     ) -> Config:
         return Config(
-            max_params_count=options.scenario_params_max_count
+            max_params_count=options.scenario_params_max_count,
         )

@@ -1,6 +1,6 @@
 from flake8_plugin_utils import assert_error, assert_not_error
 
-from flake8_vedro.errors.scenario import StepHasAssert
+from flake8_vedro.errors import StepHasAssert
 from flake8_vedro.visitors.scenario_visitor import ScenarioVisitor
 from flake8_vedro.visitors.steps_checkers import NoAssertChecker
 

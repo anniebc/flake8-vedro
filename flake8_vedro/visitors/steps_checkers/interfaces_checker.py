@@ -4,7 +4,7 @@ from typing import List, Tuple
 from flake8_plugin_utils import Error
 
 from flake8_vedro.abstract_checkers import StepsChecker
-from flake8_vedro.errors.scenario import ImportedInterfaceInWrongStep
+from flake8_vedro.errors import ImportedInterfaceInWrongStep
 from flake8_vedro.visitors.scenario_visitor import Context, ScenarioVisitor
 
 
@@ -86,11 +86,11 @@ class InterfacesUsageChecker(StepsChecker):
         return function_names
 
     def check_steps(self, context: Context) -> List[Error]:
-        errors = []
         imported = self._get_imported_from_interfaces_functions(context.import_from_nodes)
         if not imported:
-            return errors
+            return []
 
+        errors = []
         for step in context.steps:
             if (
                 step.name.startswith('given')

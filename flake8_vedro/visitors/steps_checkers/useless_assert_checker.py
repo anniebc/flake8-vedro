@@ -4,7 +4,7 @@ from typing import List
 from flake8_plugin_utils import Error
 
 from flake8_vedro.abstract_checkers import StepsChecker
-from flake8_vedro.errors.scenario import (
+from flake8_vedro.errors import (
     StepAssertHasComparisonWithoutAssert,
     StepAssertHasUselessAssert
 )
