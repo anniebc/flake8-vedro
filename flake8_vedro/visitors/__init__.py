@@ -1,4 +1,6 @@
-from .common_visitor import CommonVisitor
+from .annotation_visitor import AnnotationVisitor
+from .assert_visitor import AssertVisitor
+from .function_visitor import FunctionVisitor
 from .scenario_checkers import (
     LocationChecker,
     ParametrizationCallChecker,
