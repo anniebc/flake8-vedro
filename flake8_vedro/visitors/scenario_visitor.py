@@ -1,33 +1,34 @@
 import ast
 from typing import List, Optional, Type
 
-from flake8_plugin_utils import Visitor
-
 from flake8_vedro.abstract_checkers import (
     ScenarioChecker,
     ScenarioHelper,
     StepsChecker
 )
 from flake8_vedro.config import Config
+from flake8_vedro.types import StepType
+from flake8_vedro.visitors._visitor_with_filename import VisitorWithFilename
 
 
 class Context:
-    def __init__(self, steps, scenario_node, import_from_nodes, filename):
+    def __init__(self, steps: List[StepType], scenario_node: ast.ClassDef,
+                 import_from_nodes: List[ast.ImportFrom],
+                 filename: str):
         self.steps = steps
         self.scenario_node = scenario_node
         self.import_from_nodes = import_from_nodes
         self.filename = filename
 
 
-class ScenarioVisitor(Visitor):
+class ScenarioVisitor(VisitorWithFilename):
     scenarios_checkers: List[ScenarioChecker] = []
     steps_checkers: List[StepsChecker] = []
     import_from_nodes: List[ast.ImportFrom] = []
 
     def __init__(self, config: Optional[Config] = None,
                  filename: Optional[str] = None) -> None:
-        super(ScenarioVisitor, self).__init__(config=config)
-        self.filename = filename
+        super().__init__(config, filename)
         self.import_from_nodes = []
 
     @property

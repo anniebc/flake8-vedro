@@ -68,3 +68,65 @@ def test_scenario_but_without_assert():
         def but(): pass
     """
     assert_error(ScenarioVisitor, code, StepAssertWithoutAssert, step_name='but')
+
+
+def test_manual_scenario_without_assert():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(AssertChecker)
+    code = """
+     @allure_labels(MANUAL)
+     class Scenario:
+        def when(): pass
+        def then(): pass
+    """
+    assert_not_error(ScenarioVisitor, code)
+
+
+def test_manual_scenario_without_assert_several_tags():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(AssertChecker)
+    code = """
+     @allure_labels(Feature.add, MANUAL)
+     class Scenario:
+        def when(): pass
+        def then(): pass
+    """
+    assert_not_error(ScenarioVisitor, code)
+
+
+def test_scenario_with_allure_without_assert():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(AssertChecker)
+    code = """
+     @allure_labels(FEATURE.Add)
+     class Scenario:
+        def when(): pass
+        def then(): pass
+    """
+    assert_error(ScenarioVisitor, code, StepAssertWithoutAssert, step_name='then')
+
+
+def test_scenario_assert_in_for():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(AssertChecker)
+    code = """
+     class Scenario:
+        def when(): pass
+        def then():
+            for i in [1, 2]:
+                assert True
+    """
+    assert_not_error(ScenarioVisitor, code)
+
+
+def test_scenario_assert_in_while():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(AssertChecker)
+    code = """
+     class Scenario:
+        def when(): pass
+        def then():
+            while foo:
+                assert True
+    """
+    assert_not_error(ScenarioVisitor, code)

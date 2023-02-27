@@ -1,5 +1,8 @@
 import ast
+import pathlib
 from typing import List, Optional
+
+SCENARIOS_FOLDER = 'scenarios'
 
 
 class ScenarioHelper:
@@ -54,3 +57,11 @@ class ScenarioHelper:
         return [
             step for step in steps if step.name.startswith('then')
         ]
+
+    def is_scenario_in_correct_location(self, filename: str, folder: str = SCENARIOS_FOLDER) -> bool:
+        path = pathlib.Path(filename)
+
+        for parent in path.parents:
+            if parent.name == folder:
+                return True
+        return False

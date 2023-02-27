@@ -22,6 +22,7 @@ class OrderChecker(StepsChecker):
             return 3
         elif name.startswith('and') or name.startswith('but'):
             return 4
+        return -1
 
     def check_steps(self, context: Context) -> List[Error]:
         errors = []
@@ -29,7 +30,8 @@ class OrderChecker(StepsChecker):
         for step in context.steps:
             previous_order = self._get_step_order_by_name(previous_name)
             if previous_order is not None:
-                if self._get_step_order_by_name(step.name) < previous_order:
+                step_order = self._get_step_order_by_name(step.name)
+                if step_order >= 0 and step_order < previous_order:
                     errors.append(StepsWrongOrder(step.lineno, step.col_offset,
                                                   previous_step=previous_name,
                                                   current_step=step.name))

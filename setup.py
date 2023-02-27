@@ -8,6 +8,6 @@ def find_required():
         return f.read().splitlines()
 
 setup(
-    version='0.0.1',
+    version='0.0.2',
     install_requires=find_required(),
 )
