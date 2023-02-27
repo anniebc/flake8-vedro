@@ -22,8 +22,7 @@ from flake8_vedro.visitors.scenario_visitor import (
 @ScenarioVisitor.register_scenario_checker
 class SingleSubjectChecker(ScenarioChecker):
 
-    @staticmethod
-    def check_scenario(context: Context, *args) -> List[Error]:
+    def check_scenario(self, context: Context, *args) -> List[Error]:
         subjects = get_subjects(context.scenario_node)
 
         if not subjects:
@@ -40,10 +39,9 @@ class SingleSubjectChecker(ScenarioChecker):
 @ScenarioVisitor.register_scenario_checker
 class SubjectEmptyChecker(ScenarioChecker):
 
-    @staticmethod
-    def check_scenario(context: Context, *args) -> List[Error]:
+    def check_scenario(self, context: Context, *args) -> List[Error]:
         subject = get_subject(context.scenario_node)
         if isinstance(subject.value, ast.Constant):
             if not subject.value.value:
-                return[SubjectEmpty(subject.lineno, subject.col_offset)]
+                return [SubjectEmpty(subject.lineno, subject.col_offset)]
         return []

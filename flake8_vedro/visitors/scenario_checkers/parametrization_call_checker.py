@@ -18,16 +18,16 @@ from flake8_vedro.visitors.scenario_visitor import (
 @ScenarioVisitor.register_scenario_checker
 class ParametrizationCallChecker(ScenarioChecker):
 
-    @staticmethod
-    def check_scenario(context: Context, config) -> List[Error]:
+    def check_scenario(self, context: Context, config) -> List[Error]:
         errors = []
 
         init_node = get_init_step(context.scenario_node)
 
-        if init_node and init_node.decorator_list:
-            for decorator in get_params_decorators(init_node):
-                for arg in decorator.args:
-                    if isinstance(arg, ast.Call):
-                        errors.append(FunctionCallInParams(decorator.lineno, decorator.col_offset))
+        if init_node is None or not init_node.decorator_list:
+            return errors
 
+        for decorator in get_params_decorators(init_node):
+            for arg in decorator.args:
+                if isinstance(arg, ast.Call):
+                    errors.append(FunctionCallInParams(decorator.lineno, decorator.col_offset))
         return errors

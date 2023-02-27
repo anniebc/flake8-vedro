@@ -14,8 +14,7 @@ from flake8_vedro.visitors.scenario_visitor import (
 @ScenarioVisitor.register_scenario_checker
 class VedroOnlyChecker(ScenarioChecker):
 
-    @staticmethod
-    def check_scenario(context: Context, *args) -> List[Error]:
+    def check_scenario(self, context: Context, *args) -> List[Error]:
         for decorator in context.scenario_node.decorator_list:
             if (
                     isinstance(decorator, ast.Attribute)

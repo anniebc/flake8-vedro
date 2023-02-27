@@ -14,8 +14,7 @@ from flake8_vedro.visitors.scenario_visitor import (
 @ScenarioVisitor.register_steps_checker
 class NoAssertChecker(StepsChecker):
 
-    @staticmethod
-    def check_steps(context: Context) -> List[Error]:
+    def check_steps(self, context: Context) -> List[Error]:
         errors = []
         for step in context.steps:
             if (

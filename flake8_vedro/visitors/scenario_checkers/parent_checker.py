@@ -14,8 +14,7 @@ from flake8_vedro.visitors.scenario_visitor import (
 @ScenarioVisitor.register_scenario_checker
 class ParentChecker(ScenarioChecker):
 
-    @staticmethod
-    def check_scenario(context: Context, *args) -> List[Error]:
+    def check_scenario(self, context: Context, *args) -> List[Error]:
         has_parent = False
         for base in context.scenario_node.bases:
             if isinstance(base, ast.Attribute):
@@ -23,5 +22,5 @@ class ParentChecker(ScenarioChecker):
                 if base.attr == 'Scenario' and base.value.id == 'vedro':
                     has_parent = True
         if not has_parent:
-            return[ScenarioNotInherited(context.scenario_node.lineno, context.scenario_node.col_offset)]
+            return [ScenarioNotInherited(context.scenario_node.lineno, context.scenario_node.col_offset)]
         return []

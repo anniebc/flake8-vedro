@@ -14,8 +14,7 @@ from flake8_vedro.visitors.scenario_visitor import (
 @ScenarioVisitor.register_steps_checker
 class SingleThenChecker(StepsChecker):
 
-    @staticmethod
-    def check_steps(context: Context) -> List[Error]:
+    def check_steps(self, context: Context) -> List[Error]:
         then_steps = get_then_steps(context.steps)
 
         lineno = context.scenario_node.lineno

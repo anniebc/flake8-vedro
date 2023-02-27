@@ -19,8 +19,7 @@ from flake8_vedro.visitors.scenario_visitor import (
 @ScenarioVisitor.register_scenario_checker
 class ParametrizationSubjectChecker(ScenarioChecker):
 
-    @staticmethod
-    def check_scenario(context: Context, *args) -> List[Error]:
+    def check_scenario(self, context: Context, *args) -> List[Error]:
         init_node = get_init_step(context.scenario_node)
 
         if init_node and init_node.decorator_list:
