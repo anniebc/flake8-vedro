@@ -5,7 +5,12 @@ from typing import Callable, List, Optional
 from flake8.options.manager import OptionManager
 from flake8_plugin_utils import Plugin, Visitor
 
-from flake8_vedro.visitors import CommonVisitor, ScenarioVisitor
+from flake8_vedro.visitors import (
+    AnnotationVisitor,
+    AssertVisitor,
+    FunctionCallVisitor,
+    ScenarioVisitor
+)
 
 from .confiig import Config
 from .defaults import Defaults
@@ -15,7 +20,9 @@ class CommonStylePlugin(Plugin):
     name = 'flake8_vedro_common_style'
     version = '0.0.1'
     visitors = [
-        CommonVisitor,
+        FunctionCallVisitor,
+        AssertVisitor,
+        AnnotationVisitor
     ]
 
 
