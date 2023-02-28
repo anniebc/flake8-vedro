@@ -1,12 +1,10 @@
 from typing import List, Optional
 
 from flake8_plugin_utils import Error
+
+from flake8_vedro.abstract_checkers import StepsChecker
 from flake8_vedro.errors.scenario import StepsWrongOrder
-from flake8_vedro.visitors.scenario_visitor import (
-    Context,
-    ScenarioVisitor,
-    StepsChecker
-)
+from flake8_vedro.visitors.scenario_visitor import Context, ScenarioVisitor
 
 
 @ScenarioVisitor.register_steps_checker

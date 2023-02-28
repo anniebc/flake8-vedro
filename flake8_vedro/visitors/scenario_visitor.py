@@ -1,11 +1,14 @@
-from abc import ABC, abstractmethod
 import ast
-from typing import List, Optional
+from typing import List, Optional, Type
 
-from flake8_plugin_utils import Error, Visitor
+from flake8_plugin_utils import Visitor
 
+from flake8_vedro.abstract_checkers import (
+    ScenarioChecker,
+    ScenarioHelper,
+    StepsChecker
+)
 from flake8_vedro.confiig import Config
-from flake8_vedro.helpers.get_scenario_elements import get_all_steps
 
 
 class Context:
@@ -14,20 +17,6 @@ class Context:
         self.scenario_node = scenario_node
         self.import_from_nodes = import_from_nodes
         self.filename = filename
-
-
-class ScenarioChecker(ABC):
-
-    @abstractmethod
-    def check_scenario(self, context, config) -> List[Error]:
-        pass
-
-
-class StepsChecker(ABC):
-
-    @abstractmethod
-    def check_steps(self, context) -> List[Error]:
-        pass
 
 
 class ScenarioVisitor(Visitor):
@@ -46,12 +35,12 @@ class ScenarioVisitor(Visitor):
         return self._config
 
     @classmethod
-    def register_steps_checker(cls, checker: StepsChecker):
+    def register_steps_checker(cls, checker: Type[StepsChecker]):
         cls.steps_checkers.append(checker())
         return checker
 
     @classmethod
-    def register_scenario_checker(cls, checker: ScenarioChecker):
+    def register_scenario_checker(cls, checker: Type[ScenarioChecker]):
         cls.scenarios_checkers.append(checker())
         return checker
 
@@ -68,7 +57,7 @@ class ScenarioVisitor(Visitor):
 
     def visit_ClassDef(self, node: ast.ClassDef):
         if node.name == 'Scenario':
-            context = Context(steps=get_all_steps(node),
+            context = Context(steps=ScenarioHelper().get_all_steps(node),
                               scenario_node=node,
                               import_from_nodes=self.import_from_nodes,
                               filename=self.filename)

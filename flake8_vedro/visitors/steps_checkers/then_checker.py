@@ -2,20 +2,16 @@ from typing import List
 
 from flake8_plugin_utils import Error
 
+from flake8_vedro.abstract_checkers import StepsChecker
 from flake8_vedro.errors.scenario import StepThenDuplicated, StepThenNotFound
-from flake8_vedro.helpers.get_scenario_elements import get_then_steps
-from flake8_vedro.visitors.scenario_visitor import (
-    Context,
-    ScenarioVisitor,
-    StepsChecker
-)
+from flake8_vedro.visitors.scenario_visitor import Context, ScenarioVisitor
 
 
 @ScenarioVisitor.register_steps_checker
 class SingleThenChecker(StepsChecker):
 
     def check_steps(self, context: Context) -> List[Error]:
-        then_steps = get_then_steps(context.steps)
+        then_steps = self.get_then_steps(context.steps)
 
         lineno = context.scenario_node.lineno
         col_offset = context.scenario_node.col_offset
