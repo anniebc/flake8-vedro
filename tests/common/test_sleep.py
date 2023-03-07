@@ -1,6 +1,6 @@
 from flake8_plugin_utils import assert_error, assert_not_error
 
-from flake8_vedro.errors.common import SleepWithConstantArgument
+from flake8_vedro.errors import SleepWithConstantArgument
 from flake8_vedro.visitors.call_checkers import SleepChecker
 from flake8_vedro.visitors.function_call_visitor import FunctionCallVisitor
 

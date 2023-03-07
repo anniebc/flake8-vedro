@@ -12,7 +12,7 @@ from .scenario_checkers import (
     SubjectEmptyChecker,
     VedroOnlyChecker
 )
-from .scenario_visitor import ScenarioVisitor
+from .scenario_visitor import Context, ScenarioVisitor
 from .steps_checkers import (
     AssertChecker,
     InterfacesUsageChecker,

@@ -1,15 +1,11 @@
 import ast
 from typing import Union
 
-from flake8_plugin_utils import Visitor
-
-from flake8_vedro.errors.common import (
-    ArgAnnotationMissing,
-    ReturnAnnotationMissing
-)
+from flake8_vedro.errors import ArgAnnotationMissing, ReturnAnnotationMissing
+from flake8_vedro.visitors._visitor_with_filename import VisitorWithFilename
 
 
-class AnnotationVisitor(Visitor):
+class AnnotationVisitor(VisitorWithFilename):
 
     def check_annotation(self, node: Union[ast.FunctionDef, ast.AsyncFunctionDef]):
         for arg in node.args.args:

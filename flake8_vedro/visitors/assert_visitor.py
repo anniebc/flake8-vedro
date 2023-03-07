@@ -1,14 +1,13 @@
 import ast
 
-from flake8_plugin_utils import Visitor
-
-from flake8_vedro.errors.common import (
+from flake8_vedro.errors import (
     AssertSameObjectsForEquality,
     AssertWithConstant
 )
+from flake8_vedro.visitors._visitor_with_filename import VisitorWithFilename
 
 
-class AssertVisitor(Visitor):
+class AssertVisitor(VisitorWithFilename):
 
     def visit_Assert(self, node: ast.Assert):
         if isinstance(node.test, ast.Compare):

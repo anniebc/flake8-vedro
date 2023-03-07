@@ -1,7 +1,7 @@
 from flake8_plugin_utils import assert_error, assert_not_error
 
-from flake8_vedro.confiig import Config
-from flake8_vedro.errors.scenario import (
+from flake8_vedro.config import Config
+from flake8_vedro.errors import (
     ExceedMaxParamsCount,
     FunctionCallInParams,
     SubjectIsNotParametrized
