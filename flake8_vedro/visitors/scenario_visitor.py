@@ -67,5 +67,5 @@ class ScenarioVisitor(Visitor):
                 for checker in self.scenarios_checkers:
                     self.errors.extend(checker.check_scenario(context, self.config))
             except Exception as e:
-                print(f'Linter failed: checking {context.filename} with {checker}.\n'
+                print(f'Linter failed: checking {context.filename} with {checker.__class__}.\n'
                       f'Exception: {e}')

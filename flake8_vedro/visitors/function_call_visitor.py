@@ -23,5 +23,9 @@ class FunctionCallVisitor(VisitorWithFilename):
         cls.checkers = []
 
     def visit_Call(self, node: ast.Call):
-        for checker in self.checkers:
-            self.errors.extend(checker.check(node))
+        try:
+            for checker in self.checkers:
+                self.errors.extend(checker.check(node))
+        except Exception as e:
+            print(f'Linter failed: checking {self.filename} with {checker.__class__}.\n'
+                  f'Exception: {e}')
