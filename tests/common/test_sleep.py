@@ -76,6 +76,26 @@ def test_call_sleep_import_time():
     assert_error(FunctionCallVisitor, code, SleepWithConstantArgument)
 
 
+def test_call_sleep_import_time_kwargs():
+    FunctionCallVisitor.deregister_all()
+    FunctionCallVisitor.register_checker(SleepChecker)
+    code = """
+    import time
+    def f(): time.sleep(secs=1)
+    """
+    assert_error(FunctionCallVisitor, code, SleepWithConstantArgument)
+
+
+def test_call_sleep_import_time_kwargs_not_constant():
+    FunctionCallVisitor.deregister_all()
+    FunctionCallVisitor.register_checker(SleepChecker)
+    code = """
+    import time
+    def f(): time.sleep(secs=a)
+    """
+    assert_not_error(FunctionCallVisitor, code)
+
+
 def test_call_not_sleep_import_time():
     FunctionCallVisitor.deregister_all()
     FunctionCallVisitor.register_checker(SleepChecker)
