@@ -1,0 +1,8 @@
+venv/
+.pytest_cache/
+flake8_vedro.egg-info/
+__pycache__/
+*.pyc
+*.py~
+.idea
+_files/
