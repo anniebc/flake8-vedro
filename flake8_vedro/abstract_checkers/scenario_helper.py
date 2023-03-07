@@ -65,3 +65,17 @@ class ScenarioHelper:
             if parent.name == folder:
                 return True
         return False
+
+    def is_test_manual(self, scenario_node: ast.ClassDef) -> bool:
+        allure_decorator: Optional[ast.Call] = None
+        for decorator in scenario_node.decorator_list:
+            if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Name):
+                if decorator.func.id == 'allure_labels':
+                    allure_decorator = decorator
+                    break
+
+        if allure_decorator:
+            for arg in allure_decorator.args:
+                if isinstance(arg, ast.Name) and arg.id == 'MANUAL':
+                    return True
+        return False

@@ -8,26 +8,11 @@ from flake8_vedro.errors import StepAssertWithoutAssert
 from flake8_vedro.visitors.scenario_visitor import Context, ScenarioVisitor
 
 
-def is_test_manual(scenario_node: ast.ClassDef) -> bool:
-    allure_decorator: Optional[ast.Call] = None
-    for decorator in scenario_node.decorator_list:
-        if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Name):
-            if decorator.func.id == 'allure_labels':
-                allure_decorator = decorator
-                break
-
-    if allure_decorator:
-        for arg in allure_decorator.args:
-            if isinstance(arg, ast.Name) and arg.id == 'MANUAL':
-                return True
-    return False
-
-
 @ScenarioVisitor.register_steps_checker
 class AssertChecker(StepsChecker):
 
     def check_steps(self, context: Context) -> List[Error]:
-        if is_test_manual(context.scenario_node):
+        if self.is_test_manual(context.scenario_node):
             return []
 
         errors = []
