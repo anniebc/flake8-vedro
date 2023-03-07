@@ -1,31 +1,8 @@
 from flake8_plugin_utils import assert_error, assert_not_error
 
-from flake8_vedro.errors import DecoratorVedroOnly, ScenarioNotInherited
+from flake8_vedro.errors import ScenarioNotInherited
 from flake8_vedro.visitors import ScenarioVisitor
-from flake8_vedro.visitors.scenario_checkers import (
-    ParentChecker,
-    VedroOnlyChecker
-)
-
-
-def test_vedro_decorator_only():
-    ScenarioVisitor.deregister_all()
-    ScenarioVisitor.register_scenario_checker(VedroOnlyChecker)
-    code = """
-    @vedro.only
-    class Scenario: pass
-    """
-    assert_error(ScenarioVisitor, code, DecoratorVedroOnly)
-
-
-def test_vedro_decorator_skip():
-    ScenarioVisitor.deregister_all()
-    ScenarioVisitor.register_scenario_checker(VedroOnlyChecker)
-    code = """
-    @vedro.skip
-    class Scenario: pass
-    """
-    assert_not_error(ScenarioVisitor, code)
+from flake8_vedro.visitors.scenario_checkers import ParentChecker
 
 
 def test_vedro_scenario_not_wrong_herietence():

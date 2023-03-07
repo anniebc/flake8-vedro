@@ -1,17 +1,19 @@
+from time import sleep
+
 from interfaces import API
 
 
+@vedro.only
 class Scenario(vedro.Scenario):
     subject = 'string'
 
     def given(self):
         API.get()
-        expected_provider_blocks = schema.array.contains_all([
-            StatisticProviderWithAlbumsSchema,
-            StatisticProviderWithAlbumsSchema
-        ]).length(2)
+        sleep(1)
+        pp('asdsd')
         API().get()
-        await API.get()
+        assert True
+
 
     def when(self): pass
     def then(self): assert foo == var

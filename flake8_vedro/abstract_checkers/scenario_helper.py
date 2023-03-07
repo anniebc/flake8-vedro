@@ -1,5 +1,8 @@
 import ast
+import pathlib
 from typing import List, Optional
+
+SCENARIOS_FOLDER = 'scenarios'
 
 
 class ScenarioHelper:
@@ -7,13 +10,13 @@ class ScenarioHelper:
     def get_all_steps(self, class_node: ast.ClassDef) -> List:
         return [
             element for element in class_node.body if (
-                    isinstance(element, ast.FunctionDef) or isinstance(element, ast.AsyncFunctionDef))
+                    isinstance(element, ast.FunctionDef) or
+                    isinstance(element, ast.AsyncFunctionDef))
         ]
 
-    def get_init_step(self, node: ast.ClassDef) -> Optional[ast.FunctionDef or ast.AsyncFunctionDef]:
+    def get_init_step(self, node: ast.ClassDef) -> Optional[ast.FunctionDef]:
         for element in node.body:
-            if (isinstance(element, ast.FunctionDef) or isinstance(element, ast.AsyncFunctionDef)) \
-                    and element.name == '__init__':
+            if isinstance(element, ast.FunctionDef) and element.name == '__init__':
                 return element
 
     def get_subjects(self, node: ast.ClassDef) -> List[ast.Assign]:
@@ -27,7 +30,7 @@ class ScenarioHelper:
         subjects = self.get_subjects(node)
         return subjects[0] if subjects else None
 
-    def get_params_decorators(self, init_node: ast.FunctionDef or ast.AsyncFunctionDef) -> List[ast.Call]:
+    def get_params_decorators(self, init_node: ast.FunctionDef) -> List[ast.Call]:
         params_decorator = []
         for decorator in init_node.decorator_list:
             if isinstance(decorator, ast.Call):
@@ -54,3 +57,25 @@ class ScenarioHelper:
         return [
             step for step in steps if step.name.startswith('then')
         ]
+
+    def is_scenario_in_correct_location(self, filename: str, folder: str = SCENARIOS_FOLDER) -> bool:
+        path = pathlib.Path(filename)
+
+        for parent in path.parents:
+            if parent.name == folder:
+                return True
+        return False
+
+    def is_test_manual(self, scenario_node: ast.ClassDef) -> bool:
+        allure_decorator: Optional[ast.Call] = None
+        for decorator in scenario_node.decorator_list:
+            if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Name):
+                if decorator.func.id == 'allure_labels':
+                    allure_decorator = decorator
+                    break
+
+        if allure_decorator:
+            for arg in allure_decorator.args:
+                if isinstance(arg, ast.Name) and arg.id == 'MANUAL':
+                    return True
+        return False

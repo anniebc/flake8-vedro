@@ -29,3 +29,12 @@ class AssertVisitor(VisitorWithFilename):
             # assert var == 'string' or assert var == 1
             elif isinstance(right, ast.Constant):
                 self.error_from_node(AssertWithConstant, node)
+
+            # assert self.foo == self.foo
+            elif isinstance(left, ast.Attribute) and isinstance(right, ast.Attribute):
+                if left.attr == right.attr:  # foo == foo
+                    if (
+                        isinstance(left.value, ast.Name) and isinstance(right.value, ast.Name)
+                        and left.value.id == right.value.id
+                    ):
+                        self.error_from_node(AssertSameObjectsForEquality, node)

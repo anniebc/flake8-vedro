@@ -128,3 +128,17 @@ def test_scenario_but_before_and():
         def but(): pass
     """
     assert_not_error(ScenarioVisitor, code)
+
+
+def test_scenario_invalid_step_name():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
+    code = """
+    class Scenario:
+        def no_events(): pass
+        def when(): pass
+        def no_events_again(): pass
+        def then(): pass
+    """
+    assert_not_error(ScenarioVisitor, code)
+

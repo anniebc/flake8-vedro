@@ -12,6 +12,9 @@ from flake8_vedro.visitors.scenario_visitor import Context, ScenarioVisitor
 class AssertChecker(StepsChecker):
 
     def check_steps(self, context: Context) -> List[Error]:
+        if self.is_test_manual(context.scenario_node):
+            return []
+
         errors = []
         for step in context.steps:
             if (
@@ -20,9 +23,18 @@ class AssertChecker(StepsChecker):
                 or step.name.startswith('but')
             ):
                 has_assert = False
+
                 for line in step.body:
                     if isinstance(line, ast.Assert):
                         has_assert = True
+                        break
+
+                    elif isinstance(line, ast.For) or isinstance(line, ast.While):
+                        for line_body in line.body:
+                            if isinstance(line_body, ast.Assert):
+                                has_assert = True
+                                break
+
                 if not has_assert:
                     errors.append(StepAssertWithoutAssert(step.lineno, step.col_offset, step_name=step.name))
         return errors

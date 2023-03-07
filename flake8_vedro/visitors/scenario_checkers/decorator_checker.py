@@ -19,4 +19,15 @@ class VedroOnlyChecker(ScenarioChecker):
                     and decorator.attr == 'only'
             ):
                 return [DecoratorVedroOnly(decorator.lineno, decorator.col_offset)]
+
+            elif (
+                isinstance(decorator, ast.Name)
+                and decorator.id == 'only'
+            ):
+                for import_from in context.import_from_nodes:
+                    if import_from.module == 'vedro':
+                        for name in import_from.names:
+                            if name.name == 'only':
+                                return [DecoratorVedroOnly(decorator.lineno, decorator.col_offset)]
+
         return []

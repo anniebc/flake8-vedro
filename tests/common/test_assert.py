@@ -62,3 +62,21 @@ def test_assert_with_fstring():
     assert var == f'string'
     """
     assert_not_error(AssertVisitor, code)
+
+
+def test_assert_in_scenario():
+    code = """
+    class Scenario:
+        def when(): pass
+        def then(): assert self.foo == self.foo
+    """
+    assert_error(AssertVisitor, code, AssertSameObjectsForEquality)
+
+
+def test_correct_assert_in_scenario():
+    code = """
+    class Scenario:
+        def when(): pass
+        def then(): assert self.foo == self.var
+    """
+    assert_not_error(AssertVisitor, code)

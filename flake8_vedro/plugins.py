@@ -58,6 +58,14 @@ class VedroScenarioStylePlugin(PluginWithFilename):
             help='Maximum allowed parameters in vedro parametrized scenario. '
                  '(Default: %(default)s)',
         )
+        option_manager.add_option(
+            '--skip-tests-init-annotation',
+            default=False,
+            type=bool,
+            parse_from_config=True,
+            help='Flag to skip arguments annotation check in __init__ step in tests. '
+                 '(Default: False)',
+        )
 
     @classmethod
     def parse_options_to_config(
@@ -65,4 +73,5 @@ class VedroScenarioStylePlugin(PluginWithFilename):
     ) -> Config:
         return Config(
             max_params_count=options.scenario_params_max_count,
+            skip_tests_init_annotation=options.skip_tests_init_annotation,
         )
