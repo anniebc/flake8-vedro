@@ -1,109 +1,130 @@
 from flake8_plugin_utils import assert_error, assert_not_error
 
 from flake8_vedro.errors.scenario import StepsWrongOrder
-from flake8_vedro.visitors import StepsVisitor
+from flake8_vedro.visitors.scenario_visitor import ScenarioVisitor
+from flake8_vedro.visitors.steps_checkers import OrderChecker
 
 
 def test_scenario_no_given():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def when(): pass
-        def then(): assert foo == var
+        def then(): pass
     """
-    assert_not_error(StepsVisitor, code)
+    assert_not_error(ScenarioVisitor, code)
 
 
 def test_scenario_no_given_with_init():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def __init__(self): pass
         def when(): pass
-        def then(): assert foo == var
+        def then(): pass
     """
-    assert_not_error(StepsVisitor, code)
+    assert_not_error(ScenarioVisitor, code)
 
 
 def test_scenario_no_init():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def given(): pass
         def when(): pass
-        def then(): assert foo == var
+        def then(): pass
     """
-    assert_not_error(StepsVisitor, code)
+    assert_not_error(ScenarioVisitor, code)
 
 
 def test_scenario_several_given():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def given(): pass
         def given_another(): pass
         def when(): pass
-        def then(): assert foo == var
+        def then(): pass
     """
-    assert_not_error(StepsVisitor, code)
+    assert_not_error(ScenarioVisitor, code)
 
 
 def test_scenario_then_before_when():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
-        def then(): assert foo == var
+    class Scenario:
+        def then(): pass
         def when(): pass
     """
-    assert_error(StepsVisitor, code, StepsWrongOrder,
+    assert_error(ScenarioVisitor, code, StepsWrongOrder,
                  previous_step='then', current_step='when')
 
 
 def test_scenario_given_after_when():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def when(): pass
         def given(): pass
-        def then(): assert foo == var
+        def then(): pass
     """
-    assert_error(StepsVisitor, code, StepsWrongOrder,
+    assert_error(ScenarioVisitor, code, StepsWrongOrder,
                  previous_step='when', current_step='given')
 
 
 def test_scenario_and_before_then():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def when(): pass
-        def and_(): assert foo == var
-        def then(): assert foo == var
+        def and_(): pass
+        def then(): pass
     """
-    assert_error(StepsVisitor, code, StepsWrongOrder,
+    assert_error(ScenarioVisitor, code, StepsWrongOrder,
                  previous_step='and_', current_step='then')
 
 
 def test_scenario_several_and():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def when(): pass
-        def then_(): assert foo == var
-        def and_(): assert foo == var
-        def and_another(): assert foo == var
+        def then_(): pass
+        def and_(): pass
+        def and_another(): pass
     """
-    assert_not_error(StepsVisitor, code)
+    assert_not_error(ScenarioVisitor, code)
 
 
 def test_scenario_but_after_and():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def when(): pass
-        def then_(): assert foo == var
-        def and_(): assert foo == var
-        def but(): assert foo == var
+        def then_(): pass
+        def and_(): pass
+        def but(): pass
     """
-    assert_not_error(StepsVisitor, code)
+    assert_not_error(ScenarioVisitor, code)
 
 
 def test_scenario_but_before_and():
+    ScenarioVisitor.deregister_all()
+    ScenarioVisitor.register_steps_checker(OrderChecker)
     code = """
-    class Scenario(vedro.Scenario):
+    class Scenario:
         def when(): pass
-        def then_(): assert foo == var
-        def and_(): assert foo == var
-        def but(): assert foo == var
+        def then_(): pass
+        def and_(): pass
+        def but(): pass
     """
-    assert_not_error(StepsVisitor, code)
+    assert_not_error(ScenarioVisitor, code)

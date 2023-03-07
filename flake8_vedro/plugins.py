@@ -6,10 +6,10 @@ from flake8.options.manager import OptionManager
 from flake8_plugin_utils import Plugin, Visitor
 
 from flake8_vedro.visitors import (
-    CommonVisitor,
-    ParametrizationVisitor,
-    ScenarioVisitor,
-    StepsVisitor
+    AnnotationVisitor,
+    AssertVisitor,
+    FunctionCallVisitor,
+    ScenarioVisitor
 )
 
 from .confiig import Config
@@ -20,7 +20,9 @@ class CommonStylePlugin(Plugin):
     name = 'flake8_vedro_common_style'
     version = '0.0.1'
     visitors = [
-        CommonVisitor,
+        FunctionCallVisitor,
+        AssertVisitor,
+        AnnotationVisitor
     ]
 
 
@@ -28,9 +30,7 @@ class VedroScenarioStylePlugin(Plugin):
     name = 'flake8_vedro'
     version = '0.1.0'
     visitors = [
-        ScenarioVisitor,
-        StepsVisitor,
-        ParametrizationVisitor
+        ScenarioVisitor
     ]
 
     def __init__(self, tree: ast.AST, filename: str,  *args, **kwargs):

@@ -4,49 +4,49 @@ from flake8_vedro.errors.common import (
     AssertSameObjectsForEquality,
     AssertWithConstant
 )
-from flake8_vedro.visitors.common_visitor import CommonVisitor
+from flake8_vedro.visitors import AssertVisitor
 
 
 def test_assert_same_constants():
     code = """
     assert 1 == 1
     """
-    assert_error(CommonVisitor, code, AssertSameObjectsForEquality)
+    assert_error(AssertVisitor, code, AssertSameObjectsForEquality)
 
 
 def test_assert_constants():
     code = """
     assert 1 == 2
     """
-    assert_not_error(CommonVisitor, code)
+    assert_not_error(AssertVisitor, code)
 
 
 def test_assert_same_variables():
     code = """
     assert var == var
     """
-    assert_error(CommonVisitor, code, AssertSameObjectsForEquality)
+    assert_error(AssertVisitor, code, AssertSameObjectsForEquality)
 
 
 def test_assert_different_variables():
     code = """
     assert var == foo
     """
-    assert_not_error(CommonVisitor, code)
+    assert_not_error(AssertVisitor, code)
 
 
 def test_assert_with_string():
     code = """
     assert var == 'string'
     """
-    assert_error(CommonVisitor, code, AssertWithConstant)
+    assert_error(AssertVisitor, code, AssertWithConstant)
 
 
 def test_assert_with_number():
     code = """
     assert var == 2
     """
-    assert_error(CommonVisitor, code, AssertWithConstant)
+    assert_error(AssertVisitor, code, AssertWithConstant)
 
 
 def test_assert_with_string_in_variable():
@@ -54,11 +54,11 @@ def test_assert_with_string_in_variable():
     foo = 'string'
     assert var == foo
     """
-    assert_not_error(CommonVisitor, code)
+    assert_not_error(AssertVisitor, code)
 
 
 def test_assert_with_fstring():
     code = """
     assert var == f'string'
     """
-    assert_not_error(CommonVisitor, code)
+    assert_not_error(AssertVisitor, code)
