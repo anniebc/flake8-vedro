@@ -10,13 +10,13 @@ class ScenarioHelper:
     def get_all_steps(self, class_node: ast.ClassDef) -> List:
         return [
             element for element in class_node.body if (
-                    isinstance(element, ast.FunctionDef) or isinstance(element, ast.AsyncFunctionDef))
+                    isinstance(element, ast.FunctionDef) or
+                    isinstance(element, ast.AsyncFunctionDef))
         ]
 
-    def get_init_step(self, node: ast.ClassDef) -> Optional[ast.FunctionDef or ast.AsyncFunctionDef]:
+    def get_init_step(self, node: ast.ClassDef) -> Optional[ast.FunctionDef]:
         for element in node.body:
-            if (isinstance(element, ast.FunctionDef) or isinstance(element, ast.AsyncFunctionDef)) \
-                    and element.name == '__init__':
+            if isinstance(element, ast.FunctionDef) and element.name == '__init__':
                 return element
 
     def get_subjects(self, node: ast.ClassDef) -> List[ast.Assign]:
@@ -30,7 +30,7 @@ class ScenarioHelper:
         subjects = self.get_subjects(node)
         return subjects[0] if subjects else None
 
-    def get_params_decorators(self, init_node: ast.FunctionDef or ast.AsyncFunctionDef) -> List[ast.Call]:
+    def get_params_decorators(self, init_node: ast.FunctionDef) -> List[ast.Call]:
         params_decorator = []
         for decorator in init_node.decorator_list:
             if isinstance(decorator, ast.Call):
